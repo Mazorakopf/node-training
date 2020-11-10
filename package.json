@@ -1,0 +1,20 @@
+{
+  "name": "node-project",
+  "version": "1.0.0",
+  "description": "Tasks for NodeJs Global MEntoring Program",
+  "main": "task1.js",
+  "type": "module",
+  "scripts": {
+    "task1": "nodemon ./task1.js",
+    "task2": "nodemon ./task2.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kleshchanka Uladzislau",
+  "license": "ISC",
+  "devDependencies": {
+    "csvtojson": "^2.0.10",
+    "eslint": "^7.12.1",
+    "events-stream": "^0.2.0",
+    "nodemon": "^2.0.6"
+  }
+}
