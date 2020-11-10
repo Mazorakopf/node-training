@@ -14,7 +14,6 @@
   "devDependencies": {
     "csvtojson": "^2.0.10",
     "eslint": "^7.12.1",
-    "events-stream": "^0.2.0",
     "nodemon": "^2.0.6"
   }
 }

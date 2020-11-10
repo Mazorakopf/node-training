@@ -1,9 +1,11 @@
-const readline = require('readline').createInterface({
+import readline from 'readline';
+
+var terminal = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-readline.on('line', (input) => {
+terminal.on('line', (input) => {
     var res = input.split("").reverse().join("");
     console.log(`${res}\n`);
   });
