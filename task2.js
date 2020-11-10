@@ -1,7 +1,6 @@
 import { pipeline } from 'stream';
 import { createReadStream, createWriteStream } from 'fs';
-
-const csvtojson = require('csvtojson/v2');
+import csvtojson from 'csvtojson';
 
 var resPath = './result/task2.txt';
 
