@@ -1,11 +1,12 @@
 import readline from 'readline';
 
-var terminal = readline.createInterface({
+const terminal = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
+  terminal: false
 });
 
 terminal.on('line', (input) => {
-    var res = input.split("").reverse().join("");
+    let res = input.split("").reverse().join("");
     console.log(`${res}\n`);
   });
