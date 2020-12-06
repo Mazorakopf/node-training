@@ -1,0 +1,37 @@
+{
+  "name": "node-training",
+  "version": "1.0.0",
+  "description": "Module 2 for NodeJs Global Mentoring Program",
+  "main": "src/server.js",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.17.1",
+    "joi": "^17.3.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.14.0",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.1"
+  },
+  "scripts": {
+    "start": "nodemon ./src/server.js",
+    "check": "eslint ./src/**",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mazorakopf/node-training.git"
+  },
+  "keywords": [
+    "epam",
+    "mentoring",
+    "node"
+  ],
+  "author": "Uladzislau Kleshchanka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mazorakopf/node-training/issues"
+  },
+  "homepage": "https://github.com/Mazorakopf/node-training#readme"
+}
