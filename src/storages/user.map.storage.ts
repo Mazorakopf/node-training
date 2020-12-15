@@ -28,7 +28,7 @@ export default class UserMapStorage {
 
     public update = (id: number, newUser: User) => {
         const oldUser = this.getById(id);
-        if (oldUser) {
+        if (oldUser && !oldUser.isDeleted) {
             newUser.id = id;
             this.storage.set(newUser.id, newUser);
         }
@@ -46,7 +46,18 @@ export default class UserMapStorage {
     public getByLogin = (login: string, limit: number = Number.MAX_SAFE_INTEGER) => {
         return this.getAll()
             .filter((user) => user.login.includes(login))
-            .sort()
+            .sort(this.compare)
             .slice(0, limit);
     };
+
+    private compare = (user1: User, user2: User) =>{
+        const firstLogin = user1.login.toLocaleLowerCase();
+        const secondLogin = user2.login.toLocaleLowerCase();
+        if (firstLogin > secondLogin) {
+            return 1;
+        } else if (firstLogin < secondLogin) {
+            return -1;
+        } 
+        return 0;
+    }
 }

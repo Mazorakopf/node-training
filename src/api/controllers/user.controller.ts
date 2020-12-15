@@ -3,7 +3,7 @@ import UserMapStorage from '../../storages/user.map.storage';
 import Validator from '../validations/validator';
 import UserValidation from '../validations/user.validation';
 import Controller from './controller';
-
+import User from '../models/user';
 export default class UserController implements Controller {
 
     public readonly path: string;
@@ -22,7 +22,7 @@ export default class UserController implements Controller {
     }
 
     private initRouters() {
-        this.router.route('')
+        this.router.route('/')
             .get(this.getAll)
             .post(Validator.validate(this.validation), this.create);
 
@@ -37,13 +37,13 @@ export default class UserController implements Controller {
     }
 
     private getAll = (req: Request, res: Response) => {
-        return res.json(this.mapStorage.getAll());
+        return res.json(this.mapStorage.getAll().map(this.mapDTO));
     };
 
     private getById = (req: Request, res: Response) => {
         const userId = Number(req.params.id);
         const user = this.mapStorage.getById(userId);
-        return user ? res.json(user) : res.sendStatus(404);
+        return user ? res.json(this.mapDTO(user)) : res.sendStatus(404);
     };
 
     private create = (req: Request, res: Response) => {
@@ -67,9 +67,9 @@ export default class UserController implements Controller {
         const filter = req.query.filter as string;
         const limit = req.query.limit;
         if (limit) {
-            return res.json(this.mapStorage.getByLogin(filter, Number(limit)));
+            return res.json(this.mapStorage.getByLogin(filter, Number(limit)).map(this.mapDTO));
         } else {
-            return res.json(this.mapStorage.getByLogin(filter));
+            return res.json(this.mapStorage.getByLogin(filter).map(this.mapDTO));
         }
     }
 
@@ -90,5 +90,13 @@ export default class UserController implements Controller {
             return res.sendStatus(400)
         }
         next();
+    }
+
+    private mapDTO = (user: User) => {
+        return {
+            id: user.id,
+            login: user.login,
+            age: user.age
+        }
     }
 }
