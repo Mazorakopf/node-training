@@ -20,8 +20,8 @@
     "check": "tslint -p tsconfig.json",
     "clean": "tsc --build --clean",
     "build": "tsc --build",
-    "preinstall": "npm run clean && npm run build",
-    "install": "node ./build/server.js",
+    "prestart:prd": "npm run clean && npm run build",
+    "start:prd": "node ./build/server.js",
     "start:dev": "nodemon ./src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
