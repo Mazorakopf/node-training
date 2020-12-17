@@ -1,4 +1,4 @@
-import { ObjectSchema, ValidationOptions } from "joi";
+import { ObjectSchema, ValidationOptions } from 'joi';
 
 export default interface Validation {
 

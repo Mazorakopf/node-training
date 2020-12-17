@@ -39,30 +39,30 @@ export default class UserController implements Controller {
 
     private getAll = (req: Request, res: Response) => {
         return res.json(this.mapStorage.getAll().map(this.mapDTO));
-    };
+    }
 
     private getById = (req: Request, res: Response) => {
         const userId = Number(req.params.id);
         const user = this.mapStorage.getById(userId);
         return user ? res.json(this.mapDTO(user)) : res.sendStatus(404);
-    };
+    }
 
     private create = (req: Request, res: Response) => {
         this.mapStorage.save(req.body);
         return res.json({ created: true });
-    };
+    }
 
     private update = (req: Request, res: Response) => {
         const userId = Number(req.params.id);
         const updated = this.mapStorage.update(userId, req.body);
         return updated ? res.json({ updated: true}) : res.sendStatus(404);
-    };
+    }
 
     private remove = (req: Request, res: Response) => {
         const userId = Number(req.params.id);
-        const deleted = this.mapStorage.remove(userId)
+        const deleted = this.mapStorage.remove(userId);
         return deleted ? res.json({ deleted: true }) : res.sendStatus(404);
-    };
+    }
 
     private getByLogin = (req: Request, res: Response) => {
         const filter = req.query.filter as string;
@@ -80,7 +80,7 @@ export default class UserController implements Controller {
             return res.sendStatus(400);
         }
         return next();
-    };
+    }
 
     private checkLoginAndLimit(req: Request, res: Response, next: NextFunction) {
         const limit = Number(req.query.limit);
@@ -88,7 +88,7 @@ export default class UserController implements Controller {
             return res.sendStatus(400);
         }
         if (!req.query.filter) {
-            return res.sendStatus(400)
+            return res.sendStatus(400);
         }
         next();
     }
@@ -98,6 +98,6 @@ export default class UserController implements Controller {
             id: user.id,
             login: user.login,
             age: user.age
-        }
+        };
     }
 }
