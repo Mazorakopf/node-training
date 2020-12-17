@@ -31,9 +31,10 @@ export default class UserController implements Controller {
             .get(this.checkLoginAndLimit, this.getByLogin);
 
         this.router.route('/:id')
-            .get(this.checkId, this.getById)
-            .put(this.checkId, Validator.validate(this.validation), this.update)
-            .delete(this.checkId, this.remove);
+            .all(this.checkId)
+            .get(this.getById)
+            .put(Validator.validate(this.validation), this.update)
+            .delete(this.remove);
     }
 
     private getAll = (req: Request, res: Response) => {
