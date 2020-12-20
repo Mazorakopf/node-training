@@ -27,6 +27,17 @@ export function remove(user) {
 export function getByLogin(login, limit) {
     return this.getAll()
         .filter((user) => user.login.includes(login))
-        .sort()
+        .sort(compare)
         .slice(0, limit);
 }
+
+const compare = (user1, user2) => {
+    const firstLogin = user1.login.toLocaleLowerCase();
+    const secondLogin = user2.login.toLocaleLowerCase();
+    if (firstLogin > secondLogin) {
+        return 1;
+    } else if (firstLogin < secondLogin) {
+        return -1;
+    }
+    return 0;
+};

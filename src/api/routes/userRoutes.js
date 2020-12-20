@@ -1,12 +1,12 @@
 import express from 'express';
-import * as controller from '../controllers/userController.js';
-import { schema, options } from '../validations/userSchema.js';
-import validator from '../validations/validator.js';
+import * as controller from '../controllers/userController';
+import { schema, options } from '../validations/userSchema';
+import validator from '../validations/validator';
 
 const userRouter = express.Router();
 
 userRouter
-    .route('')
+    .route('/')
     .get(controller.getAll)
     .post(validator(schema, options), controller.create);
 

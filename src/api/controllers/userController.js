@@ -1,16 +1,16 @@
-import * as storage from '../../storages/userStorage.js';
+import * as storage from '../../storages/userStorage';
 
 export function getAll(req, res) {
     const login = req.query.login;
     const limit = req.query.limit || Number.MAX_SAFE_INTEGER;
     if (login) {
-        return res.json(storage.getByLogin(login, limit));
+        return res.json(storage.getByLogin(login, limit).map(mapDTO));
     }
-    return res.json(storage.getAll());
+    return res.json(storage.getAll().map(mapDTO));
 }
 
 export function getById(req, res) {
-    return res.json(req.params.user);
+    return res.json(mapDTO(req.params.user));
 }
 
 export function create(req, res) {
@@ -37,3 +37,11 @@ export function findUser(req, res, next, id) {
     }
     return res.sendStatus(404);
 }
+
+const mapDTO = (user) => {
+    return {
+        id: user.id,
+        login: user.login,
+        age: user.age
+    };
+};
