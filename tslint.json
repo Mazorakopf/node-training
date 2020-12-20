@@ -3,6 +3,9 @@
         "tslint:recommended"
     ],
     "rules": {
-        "no-console": false
+        "no-console": false,
+        "no-unused-variable": true,
+        "quotemark": [true, "single"],
+        "semicolon": [true, "always"]
     }
 }

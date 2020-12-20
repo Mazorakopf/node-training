@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import Controller from './controllers/controller';
 
 export default class App {
@@ -14,7 +13,7 @@ export default class App {
     }
 
     private initMiddleWares() {
-        this.app.use(bodyParser.json());
+        this.app.use(express.json());
     }
 
     private initControllers(controllers: Controller[]) {
