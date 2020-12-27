@@ -1,27 +1,25 @@
 import express from 'express';
 
-export default class App {
-    constructor(controllers, port) {
-        this.port = port;
-        this.app = express();
+export default function App(controllers, port) {
+    this._port = port;
+    this._app = express();
 
-        this.#initMiddleWares();
-        this.#initControllers(controllers);
-    }
-
-    #initMiddleWares = () => {
-        this.app.use(express.json());
-    }
-
-    #initControllers = (controllers) => {
-        controllers.forEach((controller) => {
-            this.app.use(`/api${controller.path}`, controller.router);
-        });
-    }
-
-    listen = () => {
-        this.app.listen(this.port, () => {
-            console.log(`App listening on the port ${this.port}`);
-        });
-    }
+    useMiddleWares(this._app);
+    useControllers(this._app, controllers);
 }
+
+const useMiddleWares = (app) => {
+    app.use(express.json());
+};
+
+const useControllers = (app, controllers) => {
+    controllers.forEach((controller) => {
+        app.use(`/api${controller.path}`, controller.router);
+    });
+};
+
+App.prototype.listen = function () {
+    this._app.listen(this._port, () => {
+        console.log(`App listening on the port ${this._port}`);
+    });
+};

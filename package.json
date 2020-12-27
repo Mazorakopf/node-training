@@ -4,13 +4,16 @@
   "description": "Module 3 for NodeJs Global Mentoring Program",
   "main": "src/index.js",
   "dependencies": {
+    "config": "^3.3.3",
     "express": "^4.17.1",
-    "joi": "^17.3.0"
+    "joi": "^17.3.0",
+    "pg": "^8.5.1",
+    "sequelize": "^6.3.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.8",
-    "@babel/core": "^7.2.0",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.7",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.16.0",
@@ -20,13 +23,12 @@
     "rimraf": "^3.0.2"
   },
   "scripts": {
+    "init-tables": "node -r esm ./sql/init.js",
     "check": "eslint --fix ./src/**",
-
     "clean:prd": "rimraf ./build",
     "build:prd": "npx babel ./src --out-dir ./build",
-    "launch:prd": "node ./build/index.js",
+    "launch:prd": "NODE_ENV=prod node ./build/index.js",
     "start:prd": "run-s check *:prd",
-    
     "start:dev": "nodemon -r esm ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

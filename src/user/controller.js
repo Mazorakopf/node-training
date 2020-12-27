@@ -1,74 +1,64 @@
 import express from 'express';
 import validate from '../utils/validator';
+import * as UserService from './service';
+import * as UserValidation from './validation';
 
-export default class UserController {
-    constructor(storage, validation) {
-        this.storage = storage;
-        this.validation = validation;
-        this.router = express.Router();
-        this.path = '/users';
+export default function UserController() {
+    this.router = express.Router();
+    this.path = '/users';
 
-        this.#initRoutes();
-    }
-
-    #initRoutes = () => {
-        this.router
-            .route('/')
-            .get(this.#getAll)
-            .post(validate(this.validation), this.#create);
-
-        this.router.param('id', this.#resolveId);
-
-        this.router
-            .route('/:id')
-            .get(this.#getById)
-            .put(validate(this.validation), this.#update)
-            .delete(this.#remove);
-    }
-
-    #getAll = (req, res) => {
-        const login = req.query.login;
-        const limit = req.query.limit || Number.MAX_SAFE_INTEGER;
-        if (login) {
-            return res.json(this.storage.getByLogin(login, limit).map(this.#mapDTO));
-        }
-        return res.json(this.storage.getAll().map(this.#mapDTO));
-    }
-
-    #getById = (req, res) => {
-        return res.json(this.#mapDTO(req.params.user));
-    }
-
-    #create = (req, res) => {
-        this.storage.save(req.body);
-        return res.status(200).json({ created: true });
-    }
-
-    #update = (req, res) => {
-        this.storage.update(req.params.id, req.body);
-        return res.json({ updated: true });
-    }
-
-    #remove = (req, res) => {
-        this.storage.remove(req.params.user);
-        return res.json({ deleted: true });
-    }
-
-    #resolveId = (req, res, next, id) => {
-        req.params.id = Number(id);
-        const user = this.storage.getById(req.params.id);
-        if (user && !user.isDeleted) {
-            req.params.user = user;
-            return next();
-        }
-        return res.sendStatus(404);
-    }
-
-    #mapDTO = (user) => {
-        return {
-            id: user.id,
-            login: user.login,
-            age: user.age
-        };
-    }
+    initRoutes(this.router);
 }
+
+const initRoutes = (router) => {
+    router
+        .route('/')
+        .get(findAll)
+        .post(validate(UserValidation), create);
+
+    router.param('id', checkId);
+
+    router
+        .route('/:id')
+        .get(findById)
+        .put(validate(UserValidation), update)
+        .delete(remove);
+};
+
+const findAll = async (req, res) => {
+    const login = req.query.login;
+    const limit = req.query.limit || Number.MAX_SAFE_INTEGER;
+    if (login) {
+        return UserService.findByLogin(login, limit)
+            .then(users => res.json(users));
+    }
+    return UserService.findAll()
+        .then(users => res.json(users));
+};
+
+const findById = async (req, res) => {
+    return UserService.findById(req.params.id)
+        .then(user => user ? res.json(user) : res.sendStatus(404));
+};
+
+const create = async (req, res) => {
+    return UserService.create(req.body)
+        .then(user => res.json(user));
+};
+
+const update = async (req, res) => {
+    return UserService.update(req.params.id, req.body)
+        .then(updated => updated ? res.json({ updated: true }) : res.sendStatus(404));
+};
+
+const remove = async (req, res) => {
+    return UserService.remove(req.params.id)
+        .then(user => user ? res.json({ deleted: true }) : res.sendStatus(404));
+};
+
+const checkId = (req, res, next, id) => {
+    req.params.id = Number(id);
+    return isNaN(req.params.id)
+        ? res.sendStatus(400)
+        : next();
+};

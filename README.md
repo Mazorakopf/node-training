@@ -1,3 +1,3 @@
 # node-training
-## Module 2
-### In-memory CRUD REST service with validation
+## Module 3
+### POSTGRESQL AND LAYERED ARCHITECTURE
