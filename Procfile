@@ -1,2 +1,2 @@
-web: npm run init-tables
+release: npm run init-tables
 web: npm run start:prd

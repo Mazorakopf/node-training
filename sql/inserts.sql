@@ -1,4 +1,4 @@
-INSERT INTO training.Users (login, password, age) 
+INSERT INTO training."Users" ("login", "password", "age") 
 VALUES 
     ('vlad@test.ru', 'qwerty123', 22),
     ('dima@test.ru', 'we11come', 16),
