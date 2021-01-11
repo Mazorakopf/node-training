@@ -1,16 +1,9 @@
-import express from 'express';
+import { Router } from 'express';
 import validate from '../utils/validator';
 import * as UserService from './service';
 import * as UserValidation from './validation';
 
-export default function UserController() {
-    this.router = express.Router();
-    this.path = '/users';
-
-    initRoutes(this.router);
-}
-
-const initRoutes = (router) => {
+const initRoutes = () => {
     router
         .route('/')
         .get(findAll)
@@ -62,3 +55,8 @@ const checkId = (req, res, next, id) => {
         ? res.sendStatus(400)
         : next();
 };
+
+export const router = Router();
+export const path = '/users';
+
+initRoutes();
