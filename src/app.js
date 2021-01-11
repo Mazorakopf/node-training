@@ -18,7 +18,7 @@ const useControllers = (app, controllers) => {
     });
 };
 
-App.prototype.listen = function () {
+App.prototype.listen = function listen() {
     this._app.listen(this._port, () => {
         console.log(`App listening on the port ${this._port}`);
     });
