@@ -11,8 +11,8 @@ export const findById = async (userId) => {
 };
 
 export const findAll = async () => {
-    return UserDao.findAll()
-        .then(mapList);
+    const users = await UserDao.findAll();
+    return mapList(users);
 };
 
 export const update = async (userId, user) => {

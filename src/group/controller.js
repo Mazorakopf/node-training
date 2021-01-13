@@ -1,16 +1,9 @@
-import express from 'express';
+import { Router } from 'express';
 import validate from '../utils/validator';
 import * as GroupService from './service';
 import * as GroupValidation from './validation';
 
-export default function GroupController() {
-    this.router = express.Router();
-    this.path = '/groups';
-
-    initRoutes(this.router);
-}
-
-const initRoutes = (router) => {
+const initRoutes = () => {
     router
         .route('/')
         .get(findAll)
@@ -56,3 +49,8 @@ const checkId = (req, res, next, id) => {
         ? res.sendStatus(400)
         : next();
 };
+
+export const router = Router();
+export const path = '/groups';
+
+initRoutes();
