@@ -1,29 +1,30 @@
 import UserModel from './model';
 import { Op } from 'sequelize';
 
-export const save = async (user) => {
+export const save = (user) => {
     return UserModel.create(user, { fields: ['login', 'password', 'age'] });
 };
 
-export const findById = async (userId) => {
+export const findById = (userId) => {
     return UserModel.findOne({
         where: { id: userId, isDeleted: false }
     });
 };
 
-export const findAll = async () => {
+export const findAll = (resultLimit) => {
     return UserModel.findAll({
-        where: { isDeleted: false }
+        where: { isDeleted: false },
+        limit: resultLimit
     });
 };
 
-export const update = async (userId, user) => {
+export const update = (userId, user) => {
     return UserModel.update(user, {
         where: { id: userId, isDeleted: false }
     });
 };
 
-export const remove = async (userId) => {
+export const remove = (userId) => {
     return UserModel.update({
         isDeleted: true
     }, {
@@ -31,7 +32,7 @@ export const remove = async (userId) => {
     });
 };
 
-export const findByLogin = async (userLogin, resultLimit) => {
+export const findByLogin = (userLogin, resultLimit) => {
     return UserModel.findAll({
         where: { login: { [Op.like]: `${userLogin}%` }, isDeleted: false },
         order: [['login', 'ASC']],
