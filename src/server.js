@@ -9,5 +9,9 @@ const port = process.env.PORT || config.get('server.port');
 app.use(express.json());
 app.use(`/api${UserController.path}`, UserController.router);
 app.use(`/api${GroupController.path}`, GroupController.router);
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    return res.sendStatus(500);
+});
 
 app.listen(port, () => console.log(`App listening on the port ${port}`));

@@ -1,33 +1,30 @@
 import * as UserDao from './dao';
 
 export const create = async (user) => {
-    return UserDao.save(user)
-        .then(mapOrNull);
+    const createdUser = await UserDao.save(user);
+    return mapOrNull(createdUser);
 };
 
 export const findById = async (userId) => {
-    return UserDao.findById(userId)
-        .then(mapOrNull);
+    const user = await UserDao.findById(userId);
+    return mapOrNull(user);
 };
 
-export const findAll = async () => {
-    const users = await UserDao.findAll();
+export const findAll = async (login, limit = Number.MAX_SAFE_INTEGER) => {
+    const users = login
+        ? await UserDao.findByLogin(login, limit)
+        : await UserDao.findAll(limit);
     return mapList(users);
 };
 
 export const update = async (userId, user) => {
-    return UserDao.update(userId, user)
-        .then(rowsUpdated => rowsUpdated > 0);
+    const rowsUpdated = await UserDao.update(userId, user);
+    return rowsUpdated > 0;
 };
 
 export const remove = async (userId) => {
-    return UserDao.remove(userId)
-        .then(rowsDeleted => rowsDeleted > 0);
-};
-
-export const findByLogin = async (login, limit) => {
-    return UserDao.findByLogin(login, limit)
-        .then(mapList);
+    const rowsDeleted = await UserDao.remove(userId);
+    return rowsDeleted > 0;
 };
 
 const mapOrNull = (user) => {

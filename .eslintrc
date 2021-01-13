@@ -163,7 +163,7 @@
         "no-shadow": 2,
         "no-undef-init": 2,
         "no-undef": 2,
-        "no-unused-vars": 2,
+        "no-unused-vars": 0,
         // Node.js
         "callback-return": 2,
         "no-mixed-requires": 2,
@@ -202,7 +202,7 @@
             "never"
         ],
         "eol-last": 2,
-        "func-names": 2,
+        "func-names": 1,
         "func-style": [
             2,
             "declaration",
