@@ -3,6 +3,7 @@
         "server": "***",
         "username": "***",
         "password": "***",
-        "host": "***"
+        "host": "***",
+        "uri": "***"
     }
 }

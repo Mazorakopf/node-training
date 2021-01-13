@@ -1,25 +1,20 @@
-import { promises } from 'fs';
-import { Client } from 'pg';
+/* eslint-disable no-sync */
+import fs from 'fs';
+import Client from 'pg-native';
 import config from 'config';
 
-const client = new Client({
-    host: config.get('database.host'),
-    database: config.get('database.server'),
-    user: config.get('database.username'),
-    password: config.get('database.password')
-});
-
-const execute = async (scriptPath) => {
-    await promises.readFile(scriptPath)
-        .then(async (queries) =>
-            await client.query(queries.toString())
-                .then(() => console.log(`${scriptPath} executed!`))
-        );
+const execute = (scriptPath) => {
+    try {
+        const queries = fs.readFileSync(scriptPath);
+        client.querySync(queries.toString());
+        console.log(`${scriptPath} executed!`);
+    } catch (err) {
+        console.error(err.stack);
+    }
 };
 
-client.connect()
-    .then(() => execute('./sql/tables.sql'))
-    .then(() => execute('./sql/inserts.sql'))
-    .then(() => client.end())
-    .catch(e => console.error(e.stack));
-
+const client = new Client();
+client.connectSync(config.get('database.uri'));
+execute('./sql/tables.sql');
+execute('./sql/inserts.sql');
+client.end();
