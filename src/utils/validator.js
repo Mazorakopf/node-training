@@ -1,6 +1,6 @@
-export default (schema, options) => {
+export default (validation) => {
     return (req, res, next) => {
-        const { error, value } = schema.validate(req.body, options);
+        const { error, value } = validation.schema.validate(req.body, validation.options);
         if (!error) {
             req.body = value;
             return next();

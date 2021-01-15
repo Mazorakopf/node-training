@@ -1,0 +1,9 @@
+{
+    "database": {
+        "server": "***",
+        "username": "***",
+        "password": "***",
+        "host": "***",
+        "uri": "***"
+    }
+}

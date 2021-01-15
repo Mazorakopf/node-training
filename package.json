@@ -1,28 +1,36 @@
 {
   "name": "node-training",
   "version": "1.0.0",
-  "description": "Module 2 for NodeJs Global Mentoring Program",
+  "description": "Module 3 for NodeJs Global Mentoring Program",
   "main": "src/server.js",
   "dependencies": {
+    "config": "^3.3.3",
     "express": "^4.17.1",
-    "joi": "^17.3.0"
+    "joi": "^17.3.0",
+    "pg": "^8.5.1",
+    "pg-native": "^3.0.0",
+    "sequelize": "^6.3.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.8",
-    "@babel/core": "^7.12.9",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.7",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.14.0",
+    "eslint": "^7.16.0",
     "esm": "^3.2.25",
     "nodemon": "^2.0.6",
-    "prettier": "^2.2.1"
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
-    "check": "eslint ./src/**",
-    "build": "npx babel ./src --out-dir ./build",
-    "preinstall": "npm run check && npm run build",
-    "install": "node ./build/server.js",
-    "start": "nodemon -r esm ./src/server.js",
+    "init-tables": "node -r esm ./sql/init.js",
+    "check": "eslint --fix ./src/**",
+    "clean:prd": "rimraf ./build",
+    "build:prd": "npx babel ./src --out-dir ./build",
+    "launch:prd": "NODE_ENV=production node ./build/server.js",
+    "start:prd": "run-s check *:prd",
+    "start:dev": "nodemon -r esm ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

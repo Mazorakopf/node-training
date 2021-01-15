@@ -1,11 +1,15 @@
+import config from 'config';
 import express from 'express';
-import bodyParser from 'body-parser';
-import userRouter from './api/routes/userRoutes';
+import * as UserController from './user/controller';
 
-const server = express();
-const port = process.env.PORT || 3000;
+const app = express();
+const port = process.env.PORT || config.get('server.port');
 
-server.use(bodyParser.json());
-server.use('/api/users', userRouter);
+app.use(express.json());
+app.use(`/api${UserController.path}`, UserController.router);
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    return res.sendStatus(500);
+});
 
-server.listen(port, () => console.log(`Listening at http://localhost:${port}`));
+app.listen(port, () => console.log(`App listening on the port ${port}`));
