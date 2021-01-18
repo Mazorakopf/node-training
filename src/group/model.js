@@ -1,5 +1,5 @@
 export default (sequelize, DataTypes) => {
-    const Group = sequelize.define('Group', {
+    const Group = sequelize.define('group', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -11,16 +11,16 @@ export default (sequelize, DataTypes) => {
             unique: true,
             allowNull: false
         }
-    }, {
-        timestamps: false,
-        schema: 'training'
     });
 
-    Group.associate = models =>
+    Group.associate = models => {
         Group.belongsToMany(models.Permission, {
-            through: 'Group_Permission',
-            as: 'permissions'
+            through: 'group_permission'
         });
+        Group.belongsToMany(models.User, {
+            through: 'user_group'
+        });
+    };
 
     return Group;
 };

@@ -1,5 +1,5 @@
 export default (sequelize, DataTypes) => {
-    const Permission = sequelize.define('Permission', {
+    const Permission = sequelize.define('permission', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -10,13 +10,12 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             values: ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES']
         }
-    }, {
-        timestamps: false,
-        schema: 'training'
     });
 
     Permission.associate = models =>
         Permission.belongsToMany(models.Group, {
-            through: 'Group_Permission'
+            through: 'group_permission'
         });
+
+    return Permission;
 };

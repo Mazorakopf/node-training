@@ -1,5 +1,5 @@
 export default (sequelize, DataTypes) => {
-    const User = sequelize.define('Users', {
+    const User = sequelize.define('user', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement:true,
@@ -28,14 +28,17 @@ export default (sequelize, DataTypes) => {
             }
         },
         isDeleted: {
+            field: 'is_deleted',
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull:false
         }
-    }, {
-        timestamps: false,
-        schema: 'training'
     });
+
+    User.associate = models =>
+        User.belongsToMany(models.Group, {
+            through: 'user_group'
+        });
 
     return User;
 };

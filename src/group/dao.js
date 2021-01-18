@@ -1,42 +1,43 @@
-import GroupModel from './model/group';
-import PermissionModel from './model/permission';
+import { Group, Permission, sequelize } from '../utils/database';
 
-export const save = async (group) => {
-    return PermissionModel.findAll({
-        where: { name: group.permissions }
-    }).then(permissionList => GroupModel.create({
-        name: group.name,
-        permissions: permissionList
-    }, {
-        include: [PermissionModel]
-    }));
+export const save = (group) => {
+    sequelize.transaction(async t => {
+        const createdGroup = await Group.create({ name: group.name }, { transaction: t });
+        await createdGroup.setPermissions(group.permissions, { transaction: t });
+    });
 };
 
-export const findById = async (groupId) => {
-    return GroupModel.findOne({
+export const findById = (groupId) => {
+    return Group.findOne({
+        where: { id: groupId },
+        include: Permission
+    });
+};
+
+export const findAll = () => {
+    return Group.findAll({ include: Permission });
+};
+
+export const update = (groupId, group) => {
+    return sequelize.transaction(async t => {
+        const updatedGroup = await this.findById(groupId);
+        updatedGroup.setPermissions(group.permissions);
+        return Group.update({ name: group.name }, {
+            where: { id: groupId },
+            transaction: t
+        });
+    });
+};
+
+export const remove = (groupId) => {
+    return Group.destroy({
         where: { id: groupId }
     });
 };
 
-export const findAll = async () => {
-    return GroupModel.findAll();
-};
-
-export const update = async (groupId, group) => {
-    return PermissionModel.findAll({
-        where: { name: group.permissions }
-    }).then(permissionList => GroupModel.update({
-        name: group.name,
-        permissions: permissionList
-    }, {
-        include: [PermissionModel]
-    }, {
-        where: { id: groupId }
-    }));
-};
-
-export const remove = async (groupId) => {
-    return GroupModel.update({
-        where: { id: groupId }
+export const addUsers = async (groupId, userIds) => {
+    sequelize.transaction(async t => {
+        const group = await Group.findByPk(groupId, { transaction: t });
+        await group.addUsers(userIds, { transaction: t });
     });
 };

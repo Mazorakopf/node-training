@@ -1,8 +1,7 @@
 import * as UserDao from './dao';
 
 export const create = async (user) => {
-    const createdUser = await UserDao.save(user);
-    return mapOrNull(createdUser);
+    await UserDao.save(user);
 };
 
 export const findById = async (userId) => {
@@ -28,9 +27,17 @@ export const remove = async (userId) => {
 };
 
 const mapOrNull = (user) => {
-    return user
-        ? { id: user.id, login: user.login, age: user.age }
-        : null;
+    return user ? {
+        id: user.id,
+        login: user.login,
+        age: user.age,
+        groups: user.groups.map(g => {
+            return {
+                id: g.id,
+                name: g.name
+            };
+        })
+    } : null;
 };
 
 const mapList = (users) => users.map(mapOrNull);

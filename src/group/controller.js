@@ -1,56 +1,74 @@
 import { Router } from 'express';
-import validate from '../utils/validator';
+import { ID_PARAM } from '../utils/common';
+import { numericArrayValidator } from '../middleware/validators';
 import * as GroupService from './service';
-import * as GroupValidation from './validation';
+import groupValidator from './validator';
 
-const initRoutes = () => {
-    router
-        .route('/')
-        .get(findAll)
-        .post(validate(GroupValidation), create);
-
-    router.param('id', checkId);
-
-    router
-        .route('/:id')
-        .get(findById)
-        .put(validate(GroupValidation), update)
-        .delete(remove);
+const findAll = async (req, res, next) => {
+    try {
+        const groups = await GroupService.findAll();
+        return res.json(groups);
+    } catch (err) {
+        return next(err);
+    }
 };
 
-const findAll = async (req, res) => {
-    return GroupService.findAll()
-        .then(users => res.json(users));
+const findById = async (req, res, next) => {
+    try {
+        const group = await GroupService.findById(req.params.id);
+        return group ? res.json(group) : res.sendStatus(404);
+    } catch (err) {
+        return next(err);
+    }
 };
 
-const findById = async (req, res) => {
-    return GroupService.findById(req.params.id)
-        .then(user => user ? res.json(user) : res.sendStatus(404));
+const create = async (req, res, next) => {
+    try {
+        await GroupService.create(req.body);
+        return res.sendStatus(200);
+    } catch (err) {
+        return next(err);
+    }
 };
 
-const create = async (req, res) => {
-    return GroupService.create(req.body)
-        .then(user => res.json(user));
+const update = async (req, res, next) => {
+    try {
+        const updated = await GroupService.update(req.params.id, req.body);
+        return updated ? res.sendStatus(200) : res.sendStatus(404);
+    } catch (err) {
+        return next(err);
+    }
 };
 
-const update = async (req, res) => {
-    return GroupService.update(req.params.id, req.body)
-        .then(updated => updated ? res.json({ updated: true }) : res.sendStatus(404));
+const remove = async (req, res, next) => {
+    try {
+        const deleted = await GroupService.remove(req.params.id);
+        return deleted ? res.sendStatus(200) : res.sendStatus(404);
+    } catch (err) {
+        return next(err);
+    }
 };
 
-const remove = async (req, res) => {
-    return GroupService.remove(req.params.id)
-        .then(user => user ? res.json({ deleted: true }) : res.sendStatus(404));
-};
-
-const checkId = (req, res, next, id) => {
-    req.params.id = Number(id);
-    return isNaN(req.params.id)
-        ? res.sendStatus(400)
-        : next();
+const addUsers = async (req, res, next) => {
+    try {
+        await GroupService.addUsers(req.params.id, req.body);
+        return res.json(200);
+    } catch (err) {
+        return next(err);
+    }
 };
 
 export const router = Router();
 export const path = '/groups';
 
-initRoutes();
+router.route('/')
+    .get(findAll)
+    .post(groupValidator, create);
+
+router.route(`/${ID_PARAM}`)
+    .get(findById)
+    .put(groupValidator, update)
+    .delete(remove);
+
+router.route(`/${ID_PARAM}/users`)
+    .post(numericArrayValidator, addUsers);

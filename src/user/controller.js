@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import validate from '../utils/validator';
+import { ID_PARAM } from '../utils/common';
 import * as UserService from './service';
-import * as UserValidation from './validation';
+import userValidator from './validator';
 
 const findAll = async (req, res, next) => {
     try {
@@ -23,8 +23,8 @@ const findById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-        const user = await UserService.create(req.body);
-        return res.json(user);
+        await UserService.create(req.body);
+        return res.json(200);
     } catch (err) {
         return next(err);
     }
@@ -33,7 +33,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
     try {
         const updated = await UserService.update(req.params.id, req.body);
-        return updated ? res.json({ updated: true }) : res.sendStatus(404);
+        return updated ? res.sendStatus(200) : res.sendStatus(404);
     } catch (err) {
         return next(err);
     }
@@ -42,17 +42,10 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
     try {
         const deleted = await UserService.remove(req.params.id);
-        return deleted ? res.json({ deleted: true }) : res.sendStatus(404);
+        return deleted ? res.sendStatus(200) : res.sendStatus(404);
     } catch (err) {
         return next(err);
     }
-};
-
-const checkId = (req, res, next, id) => {
-    req.params.id = Number(id);
-    return isNaN(req.params.id)
-        ? res.sendStatus(400)
-        : next();
 };
 
 export const router = Router();
@@ -60,11 +53,9 @@ export const path = '/users';
 
 router.route('/')
     .get(findAll)
-    .post(validate(UserValidation), create);
+    .post(userValidator, create);
 
-router.param('id', checkId);
-
-router.route('/:id')
+router.route(`/${ID_PARAM}`)
     .get(findById)
-    .put(validate(UserValidation), update)
+    .put(userValidator, update)
     .delete(remove);

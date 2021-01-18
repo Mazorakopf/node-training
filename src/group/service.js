@@ -1,35 +1,44 @@
 import * as GroupDao from './dao';
 
 export const create = async (group) => {
-    return GroupDao.save(group)
-        .then(mapOrNull);
+    await GroupDao.save(group);
 };
 
 export const findById = async (groupId) => {
-    return GroupDao.findById(groupId)
-        .then(mapOrNull);
+    const group = await GroupDao.findById(groupId);
+    return mapOrNull(group);
 };
 
 export const findAll = async () => {
-    return GroupDao.findAll()
-        .then(mapList);
+    const groups = await GroupDao.findAll();
+    return mapList(groups);
 };
 
 export const update = async (groupId, group) => {
-    return GroupDao.update(groupId, group)
-        .then(rowsUpdated => rowsUpdated > 0);
+    const rowsUpdated = await GroupDao.update(groupId, group);
+    return rowsUpdated > 0;
 };
 
 export const remove = async (groupId) => {
-    return GroupDao.remove(groupId)
-        .then(rowsDeleted => rowsDeleted > 0);
+    const rowsDeleted = await GroupDao.remove(groupId);
+    return rowsDeleted > 0;
+};
+
+export const addUsers = async (groupId, userIds) => {
+    await GroupDao.addUsers(groupId, userIds);
 };
 
 const mapOrNull = (group) => {
-    return group
-        ? { id: group.id, name: group.name, permissions: group.permissions.map(p => p.name) }
-        : null;
+    return group ? {
+        id: group.id,
+        name: group.name,
+        permissions: group.permissions.map(p => {
+            return {
+                id: p.id,
+                name: p.name
+            };
+        })
+    } : null;
 };
 
-const mapList = (users) => users.map(mapOrNull);
-
+const mapList = (groups) => groups.map(mapOrNull);

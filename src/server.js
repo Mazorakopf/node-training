@@ -1,17 +1,22 @@
 import config from 'config';
 import express from 'express';
+import { sequelize } from './utils/database';
 import * as UserController from './user/controller';
+import * as PermissionController from './permission/controller';
 import * as GroupController from './group/controller';
+import handleErrors from './middleware/errors';
 
 const app = express();
 const port = process.env.PORT || config.get('server.port');
 
 app.use(express.json());
 app.use(`/api${UserController.path}`, UserController.router);
+app.use(`/api${PermissionController.path}`, PermissionController.router);
 app.use(`/api${GroupController.path}`, GroupController.router);
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    return res.sendStatus(500);
-});
+app.use(handleErrors);
 
-app.listen(port, () => console.log(`App listening on the port ${port}`));
+sequelize.sync().then(() =>
+    app.listen(port, () =>
+        console.log(`App listening on the port ${port}`)
+    )
+);

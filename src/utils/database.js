@@ -1,27 +1,35 @@
 import Sequelize from 'sequelize';
 import config from 'config';
+import user from '../user/model';
+import group from '../group/model';
+import permission from '../permission/model';
 
-const sequelize = new Sequelize(
+export const sequelize = new Sequelize(
     config.get('database.server'),
     config.get('database.username'),
     config.get('database.password'),
     {
         host: config.get('database.host'),
-        dialect: config.get('database.dialect')
+        dialect: config.get('database.dialect'),
+        define: {
+            timestamps: false,
+            underscored: true,
+            schema: 'training'
+        }
     }
 );
 
-const db = {
-    User: sequelize.import('./user/model'),
-    Group: sequelize.import('./group/model/group')
+const models = {
+    User: user(sequelize, Sequelize.DataTypes),
+    Group: group(sequelize, Sequelize.DataTypes),
+    Permission: permission(sequelize, Sequelize.DataTypes)
 };
 
-Object.keys(db).forEach((modelName) => {
-    if ('associate' in db[modelName]) {
-        db[modelName].associate(db);
+Object.keys(models).forEach((name) => {
+    if ('associate' in models[name]) {
+        models[name].associate(models);
     }
 });
 
-db.sequelize = sequelize;
-
-export default db;
+export const { User, Group, Permission } = models;
+export default models;
