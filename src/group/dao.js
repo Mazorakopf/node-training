@@ -4,6 +4,7 @@ export const save = (group) => {
     return sequelize.transaction(async t => {
         const createdGroup = await Group.create({ name: group.name }, { transaction: t });
         await createdGroup.setPermissions(group.permissions, { transaction: t });
+        return createdGroup.id;
     });
 };
 

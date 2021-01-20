@@ -24,8 +24,8 @@ const findById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-        await GroupService.create(req.body);
-        return res.sendStatus(200);
+        const id = await GroupService.create(req.body);
+        return res.location(`${this.path}/${id}`).sendStatus(201);
     } catch (err) {
         return next(err);
     }
@@ -34,7 +34,7 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
     try {
         const updated = await GroupService.update(req.params.id, req.body);
-        return updated ? res.sendStatus(200) : res.sendStatus(404);
+        return updated ? res.sendStatus(204) : res.sendStatus(404);
     } catch (err) {
         return next(err);
     }
@@ -43,7 +43,7 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
     try {
         const deleted = await GroupService.remove(req.params.id);
-        return deleted ? res.sendStatus(200) : res.sendStatus(404);
+        return deleted ? res.sendStatus(204) : res.sendStatus(404);
     } catch (err) {
         return next(err);
     }

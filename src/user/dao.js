@@ -1,8 +1,9 @@
 import { Group, User } from '../utils/database';
 import { Op } from 'sequelize';
 
-export const save = (user) => {
-    User.create(user, { fields: ['login', 'password', 'age'] });
+export const save = async (user) => {
+    const createdUser = await User.create(user, { fields: ['login', 'password', 'age'] });
+    return createdUser.id;
 };
 
 export const findById = (userId) => {

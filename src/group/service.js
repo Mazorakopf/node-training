@@ -1,7 +1,7 @@
 import * as GroupDao from './dao';
 
 export const create = async (group) => {
-    await GroupDao.save(group);
+    return await GroupDao.save(group);
 };
 
 export const findById = async (groupId) => {

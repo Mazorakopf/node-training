@@ -1,7 +1,7 @@
 import * as UserDao from './dao';
 
 export const create = async (user) => {
-    await UserDao.save(user);
+    return await UserDao.save(user);
 };
 
 export const findById = async (userId) => {
