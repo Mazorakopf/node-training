@@ -1,42 +1,43 @@
-import UserModel from './model';
+import { Group, User } from '../utils/database';
 import { Op } from 'sequelize';
 
-export const save = (user) => {
-    return UserModel.create(user, { fields: ['login', 'password', 'age'] });
+export const save = async (user) => {
+    const createdUser = await User.create(user, { fields: ['login', 'password', 'age'] });
+    return createdUser.id;
 };
 
 export const findById = (userId) => {
-    return UserModel.findOne({
-        where: { id: userId, isDeleted: false }
+    return User.findOne({
+        where: { id: userId, is_deleted: false },
+        include: Group
     });
 };
 
 export const findAll = (resultLimit) => {
-    return UserModel.findAll({
-        where: { isDeleted: false },
+    return User.findAll({
+        where: { is_deleted: false },
+        include: Group,
         limit: resultLimit
     });
 };
 
 export const update = (userId, user) => {
-    return UserModel.update(user, {
-        where: { id: userId, isDeleted: false }
+    return User.update(user, {
+        where: { id: userId, is_deleted: false }
     });
 };
 
 export const remove = (userId) => {
-    return UserModel.update({
-        isDeleted: true
-    }, {
-        where: { id: userId, isDeleted: false }
+    return User.update({ isDeleted: true }, {
+        where: { id: userId, is_deleted: false }
     });
 };
 
 export const findByLogin = (userLogin, resultLimit) => {
-    return UserModel.findAll({
-        where: { login: { [Op.like]: `${userLogin}%` }, isDeleted: false },
+    return User.findAll({
+        where: { login: { [Op.like]: `${userLogin}%` }, is_deleted: false },
+        include: Group,
         order: [['login', 'ASC']],
         limit: resultLimit
     });
 };
-
