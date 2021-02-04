@@ -1,4 +1,5 @@
-import { Group, Permission, sequelize } from '../utils/database';
+import { Op } from 'sequelize';
+import { Group, Permission, User, sequelize } from '../utils/database';
 
 export const save = (group) => {
     return sequelize.transaction(async t => {
@@ -15,29 +16,36 @@ export const findById = (groupId) => {
     });
 };
 
-export const findAll = () => {
-    return Group.findAll({ include: Permission });
-};
-
-export const update = (groupId, group) => {
-    return sequelize.transaction(async t => {
-        const updatedGroup = await Group.findByPk(groupId, { transaction: t });
-        if (updatedGroup === null) return 0;
-        await updatedGroup.setPermissions(group.permissions, { transaction: t });
-        await updatedGroup.update({ name: group.name }, { transaction: t });
-        return 1;
+export const findByQuery = (query) => {
+    if (query.condition.name !== undefined) {
+        query.condition.name = { [Op.like]: `%${query.condition.name}%` };
+    }
+    return Group.findAll({
+        where: query.condition,
+        include: [
+            { model: User, duplicating: false },
+            { model: Permission, duplicating: false }
+        ],
+        order: [[query.other.orderBy || 'id', query.other.sort || 'ASC']],
+        limit: query.other.limit || Number.MAX_SAFE_INTEGER
     });
 };
 
-export const remove = (groupId) => {
-    return Group.destroy({
-        where: { id: groupId }
+export const update = (group, updatedGroup) => {
+    return sequelize.transaction(async t => {
+        await group.setPermissions(updatedGroup.permissions, { transaction: t });
+        await group.update({ name: updatedGroup.name }, { transaction: t });
     });
 };
 
-export const addUsers = async (groupId, userIds) => {
+export const remove = (group) => {
+    return group.destroy();
+};
+
+export const addUsers = async (group, userIds) => {
     return sequelize.transaction(async t => {
-        const group = await Group.findByPk(groupId, { transaction: t });
-        await group.addUsers(userIds, { transaction: t });
+        const existingUserIds = await User.findAll({ where: { id: userIds, is_deleted: false } });
+        await group.addUsers(existingUserIds, { transaction: t });
+        return existingUserIds.map(obj => obj.id);
     });
 };

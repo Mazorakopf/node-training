@@ -7,9 +7,13 @@
     "celebrate": "^13.0.4",
     "config": "^3.3.3",
     "express": "^4.17.1",
+    "express-winston": "^4.0.5",
+    "lodash": "^4.17.20",
     "pg": "^8.5.1",
     "pg-native": "^3.0.0",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.8",

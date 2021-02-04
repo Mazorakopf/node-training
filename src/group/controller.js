@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { ID_PARAM } from '../utils/common';
-import { numericArrayValidator } from '../middleware/validators';
+import { numericArrayValidator, queryParamValidator } from '../middleware/validators';
 import * as GroupService from './service';
 import groupValidator from './validator';
+import { buildQuery, findModel } from '../middleware';
 
-const findAll = async (req, res, next) => {
+const findByQuery = async (req, res, next) => {
     try {
-        const groups = await GroupService.findAll();
+        const groups = await GroupService.findByQuery(req.query);
         return res.json(groups);
     } catch (err) {
         return next(err);
@@ -15,8 +16,7 @@ const findAll = async (req, res, next) => {
 
 const findById = async (req, res, next) => {
     try {
-        const group = await GroupService.findById(req.params.id);
-        return group ? res.json(group) : res.sendStatus(404);
+        return res.json(GroupService.mapOrNull(req.params.model));
     } catch (err) {
         return next(err);
     }
@@ -33,8 +33,8 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const updated = await GroupService.update(req.params.id, req.body);
-        return updated ? res.sendStatus(204) : res.sendStatus(404);
+        await GroupService.update(req.params.model, req.body);
+        return res.sendStatus(204);
     } catch (err) {
         return next(err);
     }
@@ -42,8 +42,8 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
     try {
-        const deleted = await GroupService.remove(req.params.id);
-        return deleted ? res.sendStatus(204) : res.sendStatus(404);
+        await GroupService.remove(req.params.model);
+        return res.sendStatus(204);
     } catch (err) {
         return next(err);
     }
@@ -51,8 +51,8 @@ const remove = async (req, res, next) => {
 
 const addUsers = async (req, res, next) => {
     try {
-        await GroupService.addUsers(req.params.id, req.body);
-        return res.json(200);
+        const response = await GroupService.addUsers(req.params.model, req.body);
+        return res.json(response);
     } catch (err) {
         return next(err);
     }
@@ -61,14 +61,25 @@ const addUsers = async (req, res, next) => {
 export const router = Router();
 export const path = '/groups';
 
+const paramAttrMap = {
+    userId: '$users.id$',
+    permissionId: '$permissions.id$',
+    name: 'name'
+};
+
+const allowedParamValue = {
+    orderBy: ['name']
+};
+
 router.route('/')
-    .get(findAll)
+    .get(queryParamValidator, buildQuery(paramAttrMap, allowedParamValue), findByQuery)
     .post(groupValidator, create);
 
 router.route(`/${ID_PARAM}`)
+    .all(findModel(GroupService))
     .get(findById)
     .put(groupValidator, update)
     .delete(remove);
 
 router.route(`/${ID_PARAM}/users`)
-    .post(numericArrayValidator, addUsers);
+    .post(numericArrayValidator, findModel(GroupService), addUsers);

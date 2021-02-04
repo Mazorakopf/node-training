@@ -5,38 +5,27 @@ export const create = async (user) => {
 };
 
 export const findById = async (userId) => {
-    const user = await UserDao.findById(userId);
-    return mapOrNull(user);
+    return await UserDao.findById(userId);
 };
 
-export const findAll = async (login, limit = Number.MAX_SAFE_INTEGER) => {
-    const users = login
-        ? await UserDao.findByLogin(login, limit)
-        : await UserDao.findAll(limit);
+export const findByQuery = async (query) => {
+    const users = await UserDao.findByQuery(query);
     return mapList(users);
 };
 
-export const update = async (userId, user) => {
-    const rowsUpdated = await UserDao.update(userId, user);
-    return rowsUpdated > 0;
+export const update = async (user, updatedUser) => {
+    await UserDao.update(user, updatedUser);
 };
 
-export const remove = async (userId) => {
-    const rowsDeleted = await UserDao.remove(userId);
-    return rowsDeleted > 0;
+export const remove = async (user) => {
+    await UserDao.remove(user);
 };
 
-const mapOrNull = (user) => {
+export const mapOrNull = (user) => {
     return user ? {
         id: user.id,
         login: user.login,
-        age: user.age,
-        groups: user.groups.map(g => {
-            return {
-                id: g.id,
-                name: g.name
-            };
-        })
+        age: user.age
     } : null;
 };
 
