@@ -5,16 +5,17 @@ import * as UserController from './user/controller';
 import * as PermissionController from './permission/controller';
 import * as GroupController from './group/controller';
 import handleErrors from './middleware/errors';
-import expressLogger from './middleware/logger';
+import { logAllReq, logFailedReq } from './middleware/logger';
 
 const app = express();
 const port = process.env.PORT || config.get('server.port');
 
 app.use(express.json());
+app.use(logAllReq);
 app.use(`/api${UserController.path}`, UserController.router);
 app.use(`/api${PermissionController.path}`, PermissionController.router);
 app.use(`/api${GroupController.path}`, GroupController.router);
-app.use(expressLogger);
+app.use(logFailedReq);
 app.use(handleErrors);
 
 sequelize.sync().then(() =>

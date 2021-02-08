@@ -23,7 +23,7 @@ export const remove = (user) => {
 
 export const findByQuery = (query) => {
     query.condition.isDeleted = false;
-    if (query.condition.login !== undefined) {
+    if (query.condition.login) {
         query.condition.login = { [Op.like]: `${query.condition.login}%` };
     }
     return User.findAll({

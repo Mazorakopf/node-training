@@ -17,7 +17,7 @@ export const findById = (groupId) => {
 };
 
 export const findByQuery = (query) => {
-    if (query.condition.name !== undefined) {
+    if (query.condition.name) {
         query.condition.name = { [Op.like]: `%${query.condition.name}%` };
     }
     return Group.findAll({

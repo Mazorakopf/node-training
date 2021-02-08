@@ -10,7 +10,7 @@ export const logAllReq = expressWinston.logger({
     headerBlacklist: ['accept-encoding', 'postman-token', 'connection']
 });
 
-const logFailedReq = expressWinston.errorLogger({
+export const logFailedReq = expressWinston.errorLogger({
     winstonInstance: logger,
     meta: true,
     requestWhitelist: ['url', 'headers', 'method', 'httpVersion', 'query'],
