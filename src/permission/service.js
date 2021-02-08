@@ -1,16 +1,16 @@
 import * as PermissionDao from './dao';
 
-export const findById = async (groupId) => {
-    const permission = await PermissionDao.findById(groupId);
+export const findById = async (id) => {
+    const permission = await PermissionDao.findById(id);
     return mapOrNull(permission);
 };
 
-export const findAll = async () => {
-    const permissions = await PermissionDao.findAll();
+export const findByQuery = async (query) => {
+    const permissions = await PermissionDao.findByQuery(query);
     return mapList(permissions);
 };
 
-const mapOrNull = (permission) => {
+export const mapOrNull = (permission) => {
     return permission ? {
         id: permission.id,
         name: permission.name

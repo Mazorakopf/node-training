@@ -8,36 +8,28 @@ export const save = async (user) => {
 
 export const findById = (userId) => {
     return User.findOne({
-        where: { id: userId, is_deleted: false },
+        where: { id: userId, isDeleted: false },
         include: Group
     });
 };
 
-export const findAll = (resultLimit) => {
+export const update = (oldUser, newUser) => {
+    oldUser.update(newUser);
+};
+
+export const remove = (user) => {
+    user.update({ isDeleted: true });
+};
+
+export const findByQuery = (query) => {
+    query.condition.isDeleted = false;
+    if (query.condition.login) {
+        query.condition.login = { [Op.like]: `${query.condition.login}%` };
+    }
     return User.findAll({
-        where: { is_deleted: false },
-        include: Group,
-        limit: resultLimit
-    });
-};
-
-export const update = (userId, user) => {
-    return User.update(user, {
-        where: { id: userId, is_deleted: false }
-    });
-};
-
-export const remove = (userId) => {
-    return User.update({ isDeleted: true }, {
-        where: { id: userId, is_deleted: false }
-    });
-};
-
-export const findByLogin = (userLogin, resultLimit) => {
-    return User.findAll({
-        where: { login: { [Op.like]: `${userLogin}%` }, is_deleted: false },
-        include: Group,
-        order: [['login', 'ASC']],
-        limit: resultLimit
+        where: query.condition,
+        include: { model: Group, duplicating: false },
+        order: [[query.other.orderBy || 'id', query.other.sort || 'ASC']],
+        limit: query.other.limit || Number.MAX_SAFE_INTEGER
     });
 };

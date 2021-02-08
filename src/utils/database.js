@@ -3,6 +3,7 @@ import config from 'config';
 import user from '../user/model';
 import group from '../group/model';
 import permission from '../permission/model';
+import logger from './logger';
 
 export const sequelize = new Sequelize(
     config.get('database.server'),
@@ -11,6 +12,7 @@ export const sequelize = new Sequelize(
     {
         host: config.get('database.host'),
         dialect: config.get('database.dialect'),
+        logging: msg => logger.debug(msg),
         define: {
             timestamps: false,
             underscored: true,

@@ -1,11 +1,13 @@
 import { Router } from 'express';
+import { buildQuery, findModel } from '../middleware';
+import { queryParamValidator } from '../middleware/validators';
 import { ID_PARAM } from '../utils/common';
 import * as UserService from './service';
 import userValidator from './validator';
 
-const findAll = async (req, res, next) => {
+const findByQuery = async (req, res, next) => {
     try {
-        const users = await UserService.findAll(req.query.login, req.query.limit);
+        const users = await UserService.findByQuery(req.query);
         return res.json(users);
     } catch (err) {
         return next(err);
@@ -14,8 +16,7 @@ const findAll = async (req, res, next) => {
 
 const findById = async (req, res, next) => {
     try {
-        const user = await UserService.findById(req.params.id);
-        return user ? res.json(user) : res.sendStatus(404);
+        return res.json(UserService.mapOrNull(req.params.model));
     } catch (err) {
         return next(err);
     }
@@ -32,8 +33,8 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const updated = await UserService.update(req.params.id, req.body);
-        return updated ? res.sendStatus(204) : res.sendStatus(404);
+        await UserService.update(req.params.model, req.body);
+        return res.sendStatus(204);
     } catch (err) {
         return next(err);
     }
@@ -41,8 +42,8 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
     try {
-        const deleted = await UserService.remove(req.params.id);
-        return deleted ? res.sendStatus(204) : res.sendStatus(404);
+        await UserService.remove(req.params.model);
+        return res.sendStatus(204);
     } catch (err) {
         return next(err);
     }
@@ -51,11 +52,21 @@ const remove = async (req, res, next) => {
 export const router = Router();
 export const path = '/users';
 
+const paramAttrMap = {
+    login: 'login',
+    groupId: '$groups.id$'
+};
+
+const allowedParamValue = {
+    orderBy: ['login', 'age']
+};
+
 router.route('/')
-    .get(findAll)
+    .get(queryParamValidator, buildQuery(paramAttrMap, allowedParamValue), findByQuery)
     .post(userValidator, create);
 
 router.route(`/${ID_PARAM}`)
+    .all(findModel(UserService))
     .get(findById)
     .put(userValidator, update)
     .delete(remove);

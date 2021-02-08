@@ -1,20 +1,21 @@
 import { Router } from 'express';
 import { ID_PARAM } from '../utils/common';
 import * as PermissionService from './service';
+import { buildQuery, findModel } from '../middleware';
+import { queryParamValidator } from '../middleware/validators';
 
-const findAll = async (req, res, next) => {
+const findById = async (req, res, next) => {
     try {
-        const groups = await PermissionService.findAll();
-        return res.json(groups);
+        return res.json(PermissionService.mapOrNull(req.params.model));
     } catch (err) {
         return next(err);
     }
 };
 
-const findById = async (req, res, next) => {
+const findByQuery = async (req, res, next) => {
     try {
-        const group = await PermissionService.findById(req.params.id);
-        return group ? res.json(group) : res.sendStatus(404);
+        const group = await PermissionService.findByQuery(req.query);
+        return res.json(group);
     } catch (err) {
         return next(err);
     }
@@ -23,6 +24,13 @@ const findById = async (req, res, next) => {
 export const router = Router();
 export const path = '/permissions';
 
-router.route('/').get(findAll);
+const paramAttrMap = {
+    groupId: '$groups.id$'
+};
 
-router.route(`/${ID_PARAM}`).get(findById);
+router.route('')
+    .get(queryParamValidator, buildQuery(paramAttrMap), findByQuery);
+
+router.route(`/${ID_PARAM}`)
+    .all(findModel(PermissionService))
+    .get(findById);
