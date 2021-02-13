@@ -1,4 +1,13 @@
-import { NotSupportedQueryParamsError, NotSupportedQueryValueError } from '../exception';
+import jwt from 'jsonwebtoken';
+import config from 'config';
+import { tokenList } from '../oauth/service';
+import {
+    ForbiddenErrorResponse,
+    NotSupportedQueryParamsError,
+    NotSupportedQueryValueError,
+    UnauthorizedErrorResponse
+} from '../exception';
+
 
 const otherQueryParam = ['limit', 'orderBy', 'sort'];
 
@@ -53,4 +62,22 @@ export const findModel = (service) => {
             return next(err);
         }
     };
+};
+
+export const verifyAccessToken = async (req, res, next) => {
+    if (!req.headers.authorization) {
+        return next(new UnauthorizedErrorResponse());
+    }
+
+    const [type, accessToken] = req.headers.authorization.split(/\s+/);
+    if (type !== 'Bearer' || !accessToken) {
+        return next(new UnauthorizedErrorResponse());
+    }
+
+    jwt.verify(accessToken, config.get('security.accessTokenSecret'), (err, decoded) => {
+        if (err || !tokenList[decoded.id] || tokenList[decoded.id].accessToken !== accessToken) {
+            return next(new ForbiddenErrorResponse());
+        }
+        return next();
+    });
 };
