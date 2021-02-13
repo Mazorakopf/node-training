@@ -37,9 +37,7 @@ const handleNotSupportedQueryParamsError = (err, req, res, next) => {
     if (err instanceof NotSupportedQueryParamsError) {
         return res
             .status(400)
-            .json(
-                errorObject('Validation error', err.message, req.originalUrl)
-            );
+            .json(errorObject('Validation error', err.message, req.originalUrl));
     }
     return next(err);
 };
@@ -48,9 +46,7 @@ const handleNotSupportedQueryValueError = (err, req, res, next) => {
     if (err instanceof NotSupportedQueryValueError) {
         return res
             .status(400)
-            .json(
-                errorObject('Validation error', err.message, req.originalUrl)
-            );
+            .json(errorObject('Validation error', err.message, req.originalUrl));
     }
     return next(err);
 };
