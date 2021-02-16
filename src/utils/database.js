@@ -12,7 +12,7 @@ export const sequelize = new Sequelize(
     {
         host: config.get('database.host'),
         dialect: config.get('database.dialect'),
-        logging: msg => logger.debug(msg),
+        logging: (msg) => logger.debug(msg),
         define: {
             timestamps: false,
             underscored: true,

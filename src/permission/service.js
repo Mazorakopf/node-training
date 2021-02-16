@@ -11,10 +11,12 @@ export const findByQuery = async (query) => {
 };
 
 export const mapOrNull = (permission) => {
-    return permission ? {
-        id: permission.id,
-        name: permission.name
-    } : null;
+    return permission
+        ? {
+              id: permission.id,
+              name: permission.name
+          }
+        : null;
 };
 
 const mapList = (permissions) => permissions.map(mapOrNull);

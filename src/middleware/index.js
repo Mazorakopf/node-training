@@ -8,7 +8,6 @@ import {
     UnauthorizedErrorResponse
 } from '../exception';
 
-
 const otherQueryParam = ['limit', 'orderBy', 'sort'];
 
 export const buildQuery = (paramAttrMap, allowedParamValue) => {
@@ -18,13 +17,7 @@ export const buildQuery = (paramAttrMap, allowedParamValue) => {
 
         for (const [param, value] of Object.entries(req.query)) {
             if (allowedParamValue && allowedParamValue[param] && !allowedParamValue[param].includes(value)) {
-                return next(
-                    new NotSupportedQueryValueError(
-                        param,
-                        value,
-                        allowedParamValue[param]
-                    )
-                );
+                return next(new NotSupportedQueryValueError(param, value, allowedParamValue[param]));
             }
 
             if (otherQueryParam.includes(param)) {

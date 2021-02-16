@@ -12,7 +12,7 @@ export default (sequelize, DataTypes) => {
         }
     });
 
-    Permission.associate = models =>
+    Permission.associate = (models) =>
         Permission.belongsToMany(models.Group, {
             through: 'group_permission'
         });

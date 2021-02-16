@@ -25,15 +25,17 @@ export const addUsers = async (group, userIds) => {
     const addeddUserIds = await GroupDao.addUsers(group, userIds);
     return {
         success: addeddUserIds,
-        failures: userIds.filter(v => !addeddUserIds.includes(v))
+        failures: userIds.filter((v) => !addeddUserIds.includes(v))
     };
 };
 
 export const mapOrNull = (group) => {
-    return group ? {
-        id: group.id,
-        name: group.name
-    } : null;
+    return group
+        ? {
+              id: group.id,
+              name: group.name
+          }
+        : null;
 };
 
 const mapList = (groups) => groups.map(mapOrNull);

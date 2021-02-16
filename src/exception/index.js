@@ -6,7 +6,9 @@ export class NotSupportedQueryParamsError extends Error {
 
 export class NotSupportedQueryValueError extends Error {
     constructor(param, value, supportedValues) {
-        super(`These query value '${value}' are not supported by '${param}' parameters. Supported values: ${supportedValues}`);
+        super(
+            `These query value '${value}' are not supported by '${param}' parameters. Supported values: ${supportedValues}`
+        );
     }
 }
 

@@ -40,16 +40,12 @@ export const refreshAccessToken = async (refreshToken) => {
 };
 
 const generateTokens = (user) => {
-    const accessToken = jwt.sign(
-        { id: user.id, username: user.login },
-        config.get('security.accessTokenSecret'),
-        { expiresIn: config.get('security.accessTokenTTL') }
-    );
-    const refreshToken = jwt.sign(
-        { id: user.id, username: user.login },
-        config.get('security.refreshTokenSecret'),
-        { expiresIn: config.get('security.refreshTokenTTL') }
-    );
+    const accessToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.accessTokenSecret'), {
+        expiresIn: config.get('security.accessTokenTTL')
+    });
+    const refreshToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.refreshTokenSecret'), {
+        expiresIn: config.get('security.refreshTokenTTL')
+    });
     tokenList[user.id] = { accessToken, refreshToken };
     return {
         access_token: accessToken,

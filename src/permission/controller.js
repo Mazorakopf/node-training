@@ -28,9 +28,6 @@ const paramAttrMap = {
     groupId: '$groups.id$'
 };
 
-router.route('')
-    .get(queryParamValidator, buildQuery(paramAttrMap), findByQuery);
+router.route('').get(queryParamValidator, buildQuery(paramAttrMap), findByQuery);
 
-router.route(`/${ID_PARAM}`)
-    .all(findModel(PermissionService))
-    .get(findById);
+router.route(`/${ID_PARAM}`).all(findModel(PermissionService)).get(findById);

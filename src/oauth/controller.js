@@ -24,7 +24,5 @@ const refresh = async (req, res, next) => {
 export const router = Router();
 export const path = '/oauth';
 
-router.route('/token')
-    .post(validateAuthenticateRequest, authenticate);
-router.route('/token/refresh')
-    .post(validateRefreshTokenRequest, refresh);
+router.route('/token').post(validateAuthenticateRequest, authenticate);
+router.route('/token/refresh').post(validateRefreshTokenRequest, refresh);

@@ -1,13 +1,12 @@
 {
     "parser": "babel-eslint",
     "plugins": [
+        "prettier"
     ],
+    "extends": ["eslint:recommended", "plugin:prettier/recommended"],
     "env": {
-        "browser": true,
         "node": true,
-        "jasmine": true,
-        "es6": true,
-        "jest": true
+        "es6": true
     },
     "parserOptions": {
         "ecmaFeatures": {
@@ -30,6 +29,7 @@
         }
     },
     "rules": {
+        "prettier/prettier": "error",
         "no-debugger": 1,
         // Possible errors
         "comma-dangle": [

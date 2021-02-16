@@ -22,12 +22,13 @@ export const remove = async (user) => {
 };
 
 export const mapOrNull = (user) => {
-    return user ? {
-        id: user.id,
-        login: user.login,
-        age: user.age
-    } : null;
+    return user
+        ? {
+              id: user.id,
+              login: user.login,
+              age: user.age
+          }
+        : null;
 };
 
 const mapList = (users) => users.map(mapOrNull);
-

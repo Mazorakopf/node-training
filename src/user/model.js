@@ -2,19 +2,19 @@ export default (sequelize, DataTypes) => {
     const User = sequelize.define('user', {
         id: {
             type: DataTypes.INTEGER,
-            autoIncrement:true,
-            allowNull:false,
-            primaryKey:true
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true
         },
         login: {
             type: DataTypes.STRING,
             unique: true,
-            allowNull:false,
+            allowNull: false,
             validate: { isEmail: true }
         },
         password: {
             type: DataTypes.STRING,
-            allowNull:false,
+            allowNull: false,
             validate: {
                 len: [5, 20],
                 is: /[a-zA-Z0-9]/
@@ -31,11 +31,11 @@ export default (sequelize, DataTypes) => {
             field: 'is_deleted',
             type: DataTypes.BOOLEAN,
             defaultValue: false,
-            allowNull:false
+            allowNull: false
         }
     });
 
-    User.associate = models =>
+    User.associate = (models) =>
         User.belongsToMany(models.Group, {
             through: 'user_group'
         });

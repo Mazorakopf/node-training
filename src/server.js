@@ -24,9 +24,4 @@ app.use(`/api${GroupController.path}`, GroupController.router);
 app.use(logFailedReq);
 app.use(handleErrors);
 
-sequelize.sync().then(() =>
-    app.listen(port, () =>
-        console.log(`App listening on the port ${port}`)
-    )
-);
-
+sequelize.sync().then(() => app.listen(port, () => console.log(`App listening on the port ${port}`)));

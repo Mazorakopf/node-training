@@ -13,9 +13,7 @@ export const createRotateFile = (logLevel, filename = logLevel) =>
 const messageFormat = (info) => {
     const dateFormat = () => new Date(Date.now()).toUTCString();
     const message = `${dateFormat()} | ${info.level} | ${info.message} `;
-    return info.meta && info.meta.message
-        ? `${message}\n${info.meta.message}`
-        : message;
+    return info.meta && info.meta.message ? `${message}\n${info.meta.message}` : message;
 };
 
 const devConfig = {
@@ -39,10 +37,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 process
-    .on('unhandledRejection', err => {
+    .on('unhandledRejection', (err) => {
         logger.error('Unhandled Rejection:', err);
     })
-    .on('uncaughtException', err => {
+    .on('uncaughtException', (err) => {
         logger.error('Uncaught Exception thrown:', err);
         process.exit(1);
     });

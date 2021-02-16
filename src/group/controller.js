@@ -71,15 +71,11 @@ const allowedParamValue = {
     orderBy: ['name']
 };
 
-router.route('/')
+router
+    .route('/')
     .get(queryParamValidator, buildQuery(paramAttrMap, allowedParamValue), findByQuery)
     .post(groupValidator, create);
 
-router.route(`/${ID_PARAM}`)
-    .all(findModel(GroupService))
-    .get(findById)
-    .put(groupValidator, update)
-    .delete(remove);
+router.route(`/${ID_PARAM}`).all(findModel(GroupService)).get(findById).put(groupValidator, update).delete(remove);
 
-router.route(`/${ID_PARAM}/users`)
-    .post(numericArrayValidator, findModel(GroupService), addUsers);
+router.route(`/${ID_PARAM}/users`).post(numericArrayValidator, findModel(GroupService), addUsers);

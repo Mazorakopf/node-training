@@ -61,12 +61,9 @@ const allowedParamValue = {
     orderBy: ['login', 'age']
 };
 
-router.route('/')
+router
+    .route('/')
     .get(queryParamValidator, buildQuery(paramAttrMap, allowedParamValue), findByQuery)
     .post(userValidator, create);
 
-router.route(`/${ID_PARAM}`)
-    .all(findModel(UserService))
-    .get(findById)
-    .put(userValidator, update)
-    .delete(remove);
+router.route(`/${ID_PARAM}`).all(findModel(UserService)).get(findById).put(userValidator, update).delete(remove);
