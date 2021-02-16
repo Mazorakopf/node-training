@@ -1,10 +1,10 @@
 INSERT INTO "training"."users" ("login", "password", "age") 
 VALUES 
-    ('vlad@test.ru', 'qwerty123', 22),
-    ('dima@test.ru', 'we11come', 16),
-    ('masha@test.ru', '123445qw', 20),
-    ('nata@test.ru', 'zxcvb24', 43),
-    ('leanid@test.ru', 'potej24ssd', 46);
+    ('vlad@test.ru', '$2b$10$xVMumKa9LbjJ7hcY80g30.NP03A8QN5I2zUUiIlS.3qX830fkfs.u', 22),
+    ('dima@test.ru', '$2y$10$q315ibDhONGJMniH.xdSoeeQIgWGQdZ4xmvKwm7mfBnB2Zsb/yIv.', 16),
+    ('masha@test.ru', '$2y$10$6z7LLf5VSbVWuZYr4FXxj.JsVolegITC3Ua2Vpd..kvN/9f2oHZy6', 20),
+    ('nata@test.ru', '$2y$10$.cAUsvcXXnMJ6OGMAM0JuOyF1E1ZhamXtpyp3TOxJ1rbjc.5yFbqa', 43),
+    ('leanid@test.ru', '$2y$10$hdbhJS2mVcw8z6S2dR.wzOx1jsv4FxsZEhGYsZnBE/6hkd8XOOMTq', 46);
 
 -----------------------------------------------------------------
 

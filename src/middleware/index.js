@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import config from 'config';
-import { tokenList } from '../oauth/service';
 import {
     ForbiddenErrorResponse,
     NotSupportedQueryParamsError,
@@ -68,7 +67,7 @@ export const verifyAccessToken = async (req, res, next) => {
     }
 
     jwt.verify(accessToken, config.get('security.accessTokenSecret'), (err, decoded) => {
-        if (err || !tokenList[decoded.id] || tokenList[decoded.id].accessToken !== accessToken) {
+        if (err) {
             return next(new ForbiddenErrorResponse());
         }
         return next();

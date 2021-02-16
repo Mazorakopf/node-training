@@ -1,7 +1,9 @@
 import * as UserDao from './dao';
+import bcrypt from 'bcrypt';
+import config from 'config';
 
 export const create = async (user) => {
-    return await UserDao.save(user);
+    return await UserDao.save(encryptSensitiveData(user));
 };
 
 export const findById = async (userId) => {
@@ -14,11 +16,11 @@ export const findByQuery = async (query) => {
 };
 
 export const update = async (user, updatedUser) => {
-    await UserDao.update(user, updatedUser);
+    UserDao.update(user, encryptSensitiveData(updatedUser));
 };
 
 export const remove = async (user) => {
-    await UserDao.remove(user);
+    UserDao.remove(user);
 };
 
 export const mapOrNull = (user) => {
@@ -32,3 +34,9 @@ export const mapOrNull = (user) => {
 };
 
 const mapList = (users) => users.map(mapOrNull);
+
+const encryptSensitiveData = async (user) => {
+    const salt = await bcrypt.genSalt(config.get('saltRounds'));
+    user.password = await bcrypt.hash(user.password, salt);
+    return user;
+};

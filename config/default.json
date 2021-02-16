@@ -16,5 +16,6 @@
         "refreshTokenSecret": "cd5P5tMJDPIbIDKRMD7U241ByOtdUc9M",
         "accessTokenTTL": 300,
         "refreshTokenTTL": 1200
-    }
+    },
+    "saltRounds": 10
 }

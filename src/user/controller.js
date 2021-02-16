@@ -33,7 +33,7 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        await UserService.update(req.params.model, req.body);
+        UserService.update(req.params.model, req.body);
         return res.sendStatus(204);
     } catch (err) {
         return next(err);
@@ -42,7 +42,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
     try {
-        await UserService.remove(req.params.model);
+        UserService.remove(req.params.model);
         return res.sendStatus(204);
     } catch (err) {
         return next(err);

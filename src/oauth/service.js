@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import config from 'config';
+import bcrypt from 'bcrypt';
 import * as UserDao from '../user/dao';
 import { ForbiddenErrorResponse, UnauthorizedErrorResponse } from '../exception';
 
-export const tokenList = {};
+const tokenList = {};
 
 export const authenticate = async (login, password) => {
     const users = await UserDao.findByQuery({
@@ -16,7 +17,8 @@ export const authenticate = async (login, password) => {
     }
 
     const user = users[0];
-    if (!user || user.password !== password) {
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!user || !isValidPassword) {
         throw new UnauthorizedErrorResponse();
     }
 
@@ -29,7 +31,7 @@ export const refreshAccessToken = async (refreshToken) => {
     }
 
     return jwt.verify(refreshToken, config.get('security.refreshTokenSecret'), async (err, decoded) => {
-        if (err || tokenList[decoded.id].refreshToken !== refreshToken) {
+        if (err || tokenList[decoded.id] !== refreshToken) {
             throw new ForbiddenErrorResponse();
         }
 
@@ -46,7 +48,7 @@ const generateTokens = (user) => {
     const refreshToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.refreshTokenSecret'), {
         expiresIn: config.get('security.refreshTokenTTL')
     });
-    tokenList[user.id] = { accessToken, refreshToken };
+    tokenList[user.id] = refreshToken;
     return {
         access_token: accessToken,
         expires_in: config.get('security.accessTokenTTL'),
