@@ -36,13 +36,15 @@ if (process.env.NODE_ENV === 'production') {
     logger = createLogger(devConfig);
 }
 
+const exportLogger = logger;
+
 process
     .on('unhandledRejection', (err) => {
-        logger.error('Unhandled Rejection:', err);
+        exportLogger.error('Unhandled Rejection:', err);
     })
     .on('uncaughtException', (err) => {
-        logger.error('Uncaught Exception thrown:', err);
+        exportLogger.error('Uncaught Exception thrown:', err);
         process.exit(1);
     });
 
-export default logger;
+export default exportLogger;

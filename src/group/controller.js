@@ -5,6 +5,9 @@ import * as GroupService from './service';
 import groupValidator from './validator';
 import { buildQuery, findModel } from '../middleware';
 
+export const router = Router();
+export const path = '/groups';
+
 const findByQuery = async (req, res, next) => {
     try {
         const groups = await GroupService.findByQuery(req.query);
@@ -57,9 +60,6 @@ const addUsers = async (req, res, next) => {
         return next(err);
     }
 };
-
-export const router = Router();
-export const path = '/groups';
 
 const paramAttrMap = {
     userId: '$users.id$',

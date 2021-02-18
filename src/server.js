@@ -9,6 +9,7 @@ import * as SecurityController from './oauth/controller';
 import handleErrors from './middleware/errors';
 import { logAllReq, logFailedReq } from './middleware/logger';
 import { verifyAccessToken } from './middleware';
+import logger from './utils/logger';
 
 const app = express();
 const port = process.env.PORT || config.get('server.port');
@@ -24,4 +25,4 @@ app.use(`/api${GroupController.path}`, GroupController.router);
 app.use(logFailedReq);
 app.use(handleErrors);
 
-sequelize.sync().then(() => app.listen(port, () => console.log(`App listening on the port ${port}`)));
+sequelize.sync().then(() => app.listen(port, () => logger.info(`App listening on the port ${port}`)));

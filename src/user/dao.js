@@ -1,17 +1,16 @@
-import { Group, User } from '../utils/database';
 import { Op } from 'sequelize';
+import { Group, User } from '../utils/database';
 
 export const save = async (user) => {
     const createdUser = await User.create(user, { fields: ['login', 'password', 'age'] });
     return createdUser.id;
 };
 
-export const findById = (userId) => {
-    return User.findOne({
+export const findById = (userId) =>
+    User.findOne({
         where: { id: userId, isDeleted: false },
         include: Group
     });
-};
 
 export const update = (oldUser, newUser) => {
     oldUser.update(newUser);

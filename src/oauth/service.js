@@ -6,6 +6,22 @@ import { ForbiddenErrorResponse, UnauthorizedErrorResponse } from '../exception'
 
 const tokenList = {};
 
+const generateTokens = (user) => {
+    const accessToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.accessTokenSecret'), {
+        expiresIn: config.get('security.accessTokenTTL')
+    });
+    const refreshToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.refreshTokenSecret'), {
+        expiresIn: config.get('security.refreshTokenTTL')
+    });
+    tokenList[user.id] = refreshToken;
+    return {
+        access_token: accessToken,
+        expires_in: config.get('security.accessTokenTTL'),
+        token_type: 'Bearer',
+        refresh_token: refreshToken
+    };
+};
+
 export const authenticate = async (login, password) => {
     const users = await UserDao.findByQuery({
         condition: { login },
@@ -25,7 +41,7 @@ export const authenticate = async (login, password) => {
     return generateTokens(user);
 };
 
-export const refreshAccessToken = async (refreshToken) => {
+export const refreshAccessToken = (refreshToken) => {
     if (!refreshToken) {
         throw new UnauthorizedErrorResponse();
     }
@@ -39,20 +55,4 @@ export const refreshAccessToken = async (refreshToken) => {
 
         return generateTokens(user);
     });
-};
-
-const generateTokens = (user) => {
-    const accessToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.accessTokenSecret'), {
-        expiresIn: config.get('security.accessTokenTTL')
-    });
-    const refreshToken = jwt.sign({ id: user.id, username: user.login }, config.get('security.refreshTokenSecret'), {
-        expiresIn: config.get('security.refreshTokenTTL')
-    });
-    tokenList[user.id] = refreshToken;
-    return {
-        access_token: accessToken,
-        expires_in: config.get('security.accessTokenTTL'),
-        token_type: 'Bearer',
-        refresh_token: refreshToken
-    };
 };

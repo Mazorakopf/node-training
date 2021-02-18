@@ -5,6 +5,9 @@ import { ID_PARAM } from '../utils/common';
 import * as UserService from './service';
 import userValidator from './validator';
 
+export const router = Router();
+export const path = '/users';
+
 const findByQuery = async (req, res, next) => {
     try {
         const users = await UserService.findByQuery(req.query);
@@ -48,9 +51,6 @@ const remove = async (req, res, next) => {
         return next(err);
     }
 };
-
-export const router = Router();
-export const path = '/users';
 
 const paramAttrMap = {
     login: 'login',

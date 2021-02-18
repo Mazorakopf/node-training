@@ -4,6 +4,9 @@ import * as PermissionService from './service';
 import { buildQuery, findModel } from '../middleware';
 import { queryParamValidator } from '../middleware/validators';
 
+export const router = Router();
+export const path = '/permissions';
+
 const findById = async (req, res, next) => {
     try {
         return res.json(PermissionService.mapOrNull(req.params.model));
@@ -20,9 +23,6 @@ const findByQuery = async (req, res, next) => {
         return next(err);
     }
 };
-
-export const router = Router();
-export const path = '/permissions';
 
 const paramAttrMap = {
     groupId: '$groups.id$'

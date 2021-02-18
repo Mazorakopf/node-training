@@ -25,8 +25,9 @@
     "@babel/preset-env": "^7.12.7",
     "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.16.0",
+    "eslint": "^7.2.0",
     "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "esm": "^3.2.25",
     "husky": "^5.0.9",
@@ -39,8 +40,7 @@
   },
   "scripts": {
     "init-tables": "node -r esm ./sql/init.js",
-    "lint": "npx eslint ./src --ext .js",
-    "prettier": "npx prettier --write src/**/**.*",
+    "lint": "npx eslint ./src/**/*.js --fix",
     "clean": "rimraf ./build",
     "build": "npx babel ./src --out-dir ./build",
     "stop:prd": "pm2 stop user-service",
@@ -54,10 +54,7 @@
     "pre-push": "run-s clean build"
   },
   "lint-staged": {
-    "src/**/*.js": [
-      "npm run prettier",
-      "npm run lint"
-    ]
+    "src/**/*.js": "npm run lint"
   },
   "repository": {
     "type": "git",
