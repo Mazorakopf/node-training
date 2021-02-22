@@ -5,6 +5,9 @@ import { ID_PARAM } from '../utils/common';
 import * as UserService from './service';
 import userValidator from './validator';
 
+export const router = Router();
+export const path = '/users';
+
 const findByQuery = async (req, res, next) => {
     try {
         const users = await UserService.findByQuery(req.query);
@@ -33,7 +36,7 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        await UserService.update(req.params.model, req.body);
+        UserService.update(req.params.model, req.body);
         return res.sendStatus(204);
     } catch (err) {
         return next(err);
@@ -42,15 +45,12 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
     try {
-        await UserService.remove(req.params.model);
+        UserService.remove(req.params.model);
         return res.sendStatus(204);
     } catch (err) {
         return next(err);
     }
 };
-
-export const router = Router();
-export const path = '/users';
 
 const paramAttrMap = {
     login: 'login',
@@ -61,12 +61,9 @@ const allowedParamValue = {
     orderBy: ['login', 'age']
 };
 
-router.route('/')
+router
+    .route('/')
     .get(queryParamValidator, buildQuery(paramAttrMap, allowedParamValue), findByQuery)
     .post(userValidator, create);
 
-router.route(`/${ID_PARAM}`)
-    .all(findModel(UserService))
-    .get(findById)
-    .put(userValidator, update)
-    .delete(remove);
+router.route(`/${ID_PARAM}`).all(findModel(UserService)).get(findById).put(userValidator, update).delete(remove);

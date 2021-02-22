@@ -5,6 +5,9 @@ import * as GroupService from './service';
 import groupValidator from './validator';
 import { buildQuery, findModel } from '../middleware';
 
+export const router = Router();
+export const path = '/groups';
+
 const findByQuery = async (req, res, next) => {
     try {
         const groups = await GroupService.findByQuery(req.query);
@@ -58,9 +61,6 @@ const addUsers = async (req, res, next) => {
     }
 };
 
-export const router = Router();
-export const path = '/groups';
-
 const paramAttrMap = {
     userId: '$users.id$',
     permissionId: '$permissions.id$',
@@ -71,15 +71,11 @@ const allowedParamValue = {
     orderBy: ['name']
 };
 
-router.route('/')
+router
+    .route('/')
     .get(queryParamValidator, buildQuery(paramAttrMap, allowedParamValue), findByQuery)
     .post(groupValidator, create);
 
-router.route(`/${ID_PARAM}`)
-    .all(findModel(GroupService))
-    .get(findById)
-    .put(groupValidator, update)
-    .delete(remove);
+router.route(`/${ID_PARAM}`).all(findModel(GroupService)).get(findById).put(groupValidator, update).delete(remove);
 
-router.route(`/${ID_PARAM}/users`)
-    .post(numericArrayValidator, findModel(GroupService), addUsers);
+router.route(`/${ID_PARAM}/users`).post(numericArrayValidator, findModel(GroupService), addUsers);

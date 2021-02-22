@@ -5,5 +5,9 @@
         "password": "***",
         "host": "***",
         "uri": "***"
+    },
+    "security": {
+        "accessTokenSecret": "***",
+        "refreshTokenSecret": "***"
     }
 }

@@ -10,5 +10,12 @@
         "dialect": "postgres",
         "port": 5432,
         "uri": "postgresql://postgres:admin@localhost:5432/postgres"
-    }
+    },
+    "security": {
+        "accessTokenSecret": "SdQEpc7G7g84672diRdaU9w5KfZfknIm",
+        "refreshTokenSecret": "cd5P5tMJDPIbIDKRMD7U241ByOtdUc9M",
+        "accessTokenTTL": 300,
+        "refreshTokenTTL": 1200
+    },
+    "saltRounds": 10
 }

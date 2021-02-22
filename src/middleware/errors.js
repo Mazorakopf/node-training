@@ -1,24 +1,32 @@
 import { isCelebrateError } from 'celebrate';
 import { ValidationError } from 'sequelize/lib/errors';
-import { NotSupportedQueryParamsError, NotSupportedQueryValueError } from '../exception';
+import {
+    ForbiddenErrorResponse,
+    NotSupportedQueryParamsError,
+    NotSupportedQueryValueError,
+    UnauthorizedErrorResponse
+} from '../exception';
+
+const errorObject = (err, eDetails, ePath) => ({
+    timestamp: new Date().toISOString(),
+    error: err,
+    details: eDetails,
+    path: ePath
+});
 
 const handleCelebrateErrors = (err, req, res, next) => {
     if (!isCelebrateError(err)) {
         return next(err);
     }
     const details = [];
-    for (const [key, value] of err.details) {
-        details.push({ segment: key, messages: value.message });
-    }
+    err.details.forEach((value, key) => details.push({ segment: key, messages: value.message }));
     return res.status(400).json(errorObject('Validation error', details, req.originalUrl));
 };
 
 const handleSequelizeErrors = (err, req, res, next) => {
     if (err instanceof ValidationError) {
         const details = [];
-        for (const error of err.errors) {
-            details.push({ path: error.path, value: error.value, message: error.message });
-        }
+        err.errors.forEach((e) => details.push({ path: e.path, value: e.value, message: e.message }));
         return res.status(400).json(errorObject('Validation error', details, req.originalUrl));
     }
     return next(err);
@@ -38,23 +46,29 @@ const handleNotSupportedQueryValueError = (err, req, res, next) => {
     return next(err);
 };
 
-const handleAllErrors = (err, req, res, next) => {
-    return res.status(500).json(errorObject('Internal server error', err.message, req.originalUrl));
+const handleUnauthorizedErrorResponse = (err, req, res, next) => {
+    if (err instanceof UnauthorizedErrorResponse) {
+        return res.status(401).json(errorObject('Unauthorized error', err.message, req.originalUrl));
+    }
+    return next(err);
 };
 
-const errorObject = (err, eDetails, ePath) => {
-    return {
-        timestamp: new Date().toISOString(),
-        error: err,
-        details: eDetails,
-        path: ePath
-    };
+const handleForbiddenErrorResponse = (err, req, res, next) => {
+    if (err instanceof ForbiddenErrorResponse) {
+        return res.status(403).json(errorObject('Forbidden', err.message, req.originalUrl));
+    }
+    return next(err);
 };
+
+const handleAllErrors = (err, req, res) =>
+    res.status(500).json(errorObject('Internal server error', err.message, req.originalUrl));
 
 export default [
     handleCelebrateErrors,
     handleSequelizeErrors,
     handleNotSupportedQueryParamsError,
     handleNotSupportedQueryValueError,
+    handleUnauthorizedErrorResponse,
+    handleForbiddenErrorResponse,
     handleAllErrors
 ];
