@@ -8,7 +8,7 @@ import { buildQuery, findModel } from '../middleware';
 export const router = Router();
 export const path = '/groups';
 
-const findByQuery = async (req, res, next) => {
+export const findByQuery = async (req, res, next) => {
     try {
         const groups = await GroupService.findByQuery(req.query);
         return res.json(groups);
@@ -17,7 +17,7 @@ const findByQuery = async (req, res, next) => {
     }
 };
 
-const findById = async (req, res, next) => {
+export const findById = async (req, res, next) => {
     try {
         return res.json(GroupService.mapOrNull(req.params.model));
     } catch (err) {
@@ -25,16 +25,16 @@ const findById = async (req, res, next) => {
     }
 };
 
-const create = async (req, res, next) => {
+export const create = async (req, res, next) => {
     try {
         const id = await GroupService.create(req.body);
-        return res.location(`${this.path}/${id}`).sendStatus(201);
+        return res.location(`${path}/${id}`).sendStatus(201);
     } catch (err) {
         return next(err);
     }
 };
 
-const update = async (req, res, next) => {
+export const update = async (req, res, next) => {
     try {
         await GroupService.update(req.params.model, req.body);
         return res.sendStatus(204);
@@ -43,7 +43,7 @@ const update = async (req, res, next) => {
     }
 };
 
-const remove = async (req, res, next) => {
+export const remove = async (req, res, next) => {
     try {
         await GroupService.remove(req.params.model);
         return res.sendStatus(204);
@@ -52,7 +52,7 @@ const remove = async (req, res, next) => {
     }
 };
 
-const addUsers = async (req, res, next) => {
+export const addUsers = async (req, res, next) => {
     try {
         const response = await GroupService.addUsers(req.params.model, req.body);
         return res.json(response);
