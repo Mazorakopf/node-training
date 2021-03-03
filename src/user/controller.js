@@ -8,7 +8,7 @@ import userValidator from './validator';
 export const router = Router();
 export const path = '/users';
 
-const findByQuery = async (req, res, next) => {
+export const findByQuery = async (req, res, next) => {
     try {
         const users = await UserService.findByQuery(req.query);
         return res.json(users);
@@ -17,7 +17,7 @@ const findByQuery = async (req, res, next) => {
     }
 };
 
-const findById = async (req, res, next) => {
+export const findById = async (req, res, next) => {
     try {
         return res.json(UserService.mapOrNull(req.params.model));
     } catch (err) {
@@ -25,7 +25,7 @@ const findById = async (req, res, next) => {
     }
 };
 
-const create = async (req, res, next) => {
+export const create = async (req, res, next) => {
     try {
         const id = await UserService.create(req.body);
         return res.location(`${path}/${id}`).sendStatus(201);
@@ -34,18 +34,18 @@ const create = async (req, res, next) => {
     }
 };
 
-const update = async (req, res, next) => {
+export const update = async (req, res, next) => {
     try {
-        UserService.update(req.params.model, req.body);
+        await UserService.update(req.params.model, req.body);
         return res.sendStatus(204);
     } catch (err) {
         return next(err);
     }
 };
 
-const remove = async (req, res, next) => {
+export const remove = async (req, res, next) => {
     try {
-        UserService.remove(req.params.model);
+        await UserService.remove(req.params.model);
         return res.sendStatus(204);
     } catch (err) {
         return next(err);
